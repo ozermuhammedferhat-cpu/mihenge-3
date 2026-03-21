@@ -667,7 +667,7 @@ footer strong { color: var(--text2); font-weight: 500; }
 <div class="hero">
   <div class="hero-tag">Yapay Zeka Destekli Gerçek Denetimi</div>
   <h1>Haberi sorgula,<br><em>gerçeği</em> bul.</h1>
-  <p>Haber, tweet veya herhangi bir iddiayı yapıştır. Güvenilir kaynaklarla analiz edelim.</p>
+  <p>Haber linkini yapıştır. Sisteme bırak — iddiaları otomatik tespit edip kaynağıyla doğrulayalım.</p>
 </div>
 
 <!-- FORM -->
@@ -680,24 +680,8 @@ footer strong { color: var(--text2); font-weight: 500; }
     <div class="form-body">
 
       <div class="field">
-        <label class="field-label">Kaynak Linki <span>(opsiyonel)</span></label>
-        <input type="text" id="linkInput" placeholder="https://...">
-      </div>
-
-      <div class="field">
-        <label class="field-label">Kaynak Adı <span>(opsiyonel)</span></label>
-        <input type="text" id="titleInput" placeholder="ör. CNN Türk, @kullanici, Haber7">
-      </div>
-
-      <div class="field">
-        <label class="field-label">Kontrol Edilecek İçerik</label>
-        <div class="claims-wrapper" id="claimsWrapper">
-          <div class="claim-row">
-            <div class="claim-index">1</div>
-            <textarea placeholder="Haber metnini, tweet içeriğini veya kontrol etmek istediğin iddiayı buraya yaz..." rows="3"></textarea>
-          </div>
-        </div>
-        <button class="add-claim-btn" onclick="addClaim()">+ İddia ekle</button>
+        <label class="field-label">Haber Linki</label>
+        <input type="text" id="linkInput" placeholder="https://cnnturk.com/... veya herhangi bir haber linki">
       </div>
 
       <div class="divider"></div>
@@ -706,7 +690,7 @@ footer strong { color: var(--text2); font-weight: 500; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        Sorgula
+        Analiz Et
       </button>
 
     </div>
@@ -774,16 +758,13 @@ function animateSteps() {
 }
 
 async function analyze() {
-  const link   = document.getElementById('linkInput').value.trim();
-  const title  = document.getElementById('titleInput').value.trim();
-  const claims = [...document.querySelectorAll('#claimsWrapper textarea')]
-    .map(t => t.value.trim()).filter(Boolean);
+  const link = document.getElementById('linkInput').value.trim();
 
   const errEl = document.getElementById('errorMsg');
   errEl.className = 'error-msg';
 
-  if (!claims.length) {
-    errEl.textContent = 'Lütfen en az bir içerik veya iddia girin.';
+  if (!link) {
+    errEl.textContent = 'Lütfen bir haber linki girin.';
     errEl.className = 'error-msg show';
     return;
   }
@@ -797,7 +778,7 @@ async function analyze() {
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ link, title, claims })
+      body: JSON.stringify({ link })
     });
 
     if (!res.ok) {
@@ -807,7 +788,7 @@ async function analyze() {
 
     const data = await res.json();
     document.getElementById('loadingSection').className = 'loading-section';
-    renderResults(data, link, title);
+    renderResults(data, link, data.articleTitle || link);
 
   } catch (err) {
     document.getElementById('loadingSection').className = 'loading-section';
