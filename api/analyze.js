@@ -9,6 +9,11 @@ export default async function handler(req, res) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API anahtarı yapılandırılmamış' });
 
+  // Today's date
+  const today = new Date().toLocaleDateString('tr-TR', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+
   // Step 1: Fetch article
   let articleText = '';
   let articleTitle = '';
@@ -50,32 +55,32 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Sayfadan yeterli içerik çıkarılamadı.' });
   }
 
-  // Step 2: Analyze — prompt JSON dışında HİÇBİR şey üretme
-  const prompt = `Aşağıdaki haber metnini analiz et ve olgusal iddiaları doğrula.
+  const prompt = `Sen Mihenge AI adlı profesyonel bir gerçek-denetim asistanısın.
+
+ÖNEMLİ: Bugünün tarihi ${today}. Sen bir yapay zeka olarak bilgi kesim tarihinden sonraki olayları bilmiyor olabilirsin. Ancak bu, haberin yanlış olduğu anlamına GELMEZ. Eğer bir olayı bilmiyorsan "DOĞRULANAMAZ" olarak işaretle, asla "yanlış" veya "gelecekte" deme. Tarihi gerçekmiş gibi kabul et çünkü bugün ${today} tarihidir.
 
 KAYNAK: ${articleTitle || link}
 METİN: ${articleText}
 
-Yukarıdaki haberdeki somut, doğrulanabilir iddiaları tespit et ve her birini değerlendir.
+GÖREV:
+- Haberdeki somut iddiaları tespit et
+- Bildiğin bilgilerle doğrula
+- Bilmediğin/doğrulayamadığın şeyleri "DOĞRULANAMAZ" olarak işaretle
+- "Gelecekte gerçekleşecek" deme — bugün ${today}
 
-ÇIKTI KURALLARI:
-- SADECE JSON döndür
-- JSON öncesinde veya sonrasında HİÇBİR metin, açıklama, markdown yazma
-- Geçersiz JSON karakteri kullanma
-- Tüm string değerlerde çift tırnak kullan
+ÇIKTI: SADECE JSON, başka hiçbir şey yazma.
 
-JSON ŞEMASI:
 {
   "overallScore": 75,
   "overallVerdict": "KISMEN DOĞRU",
-  "summary": "Haberin genel değerlendirmesi burada.",
+  "summary": "Haberin genel değerlendirmesi.",
   "articleTitle": "${articleTitle.replace(/"/g, "'")}",
   "claims": [
     {
-      "claim": "İddia metni",
+      "claim": "Tespit edilen iddia",
       "verdict": "DOĞRU",
       "verdictEn": "true",
-      "explanation": "Açıklama metni burada.",
+      "explanation": "Açıklama.",
       "sources": [
         {
           "title": "Kaynak başlığı",
@@ -111,38 +116,28 @@ JSON ŞEMASI:
     }
 
     const geminiData = await geminiRes.json();
-
-    // Extract all text parts
     const parts = geminiData.candidates?.[0]?.content?.parts || [];
     const rawText = parts.filter(p => p.text).map(p => p.text).join('');
 
     if (!rawText) {
-      // Log finish reason for debugging
       const finishReason = geminiData.candidates?.[0]?.finishReason || 'unknown';
-      throw new Error(`AI yanıt üretemedi (sebep: ${finishReason}). Tekrar deneyin.`);
+      throw new Error(`AI yanıt üretemedi (${finishReason}). Tekrar deneyin.`);
     }
 
-    // Parse JSON — multiple strategies
     let result = null;
 
-    // Strategy 1: Direct parse
     try { result = JSON.parse(rawText.trim()); } catch(e) {}
 
-    // Strategy 2: Extract JSON block
     if (!result) {
       const match = rawText.match(/\{[\s\S]*"claims"[\s\S]*\}/);
-      if (match) {
-        try { result = JSON.parse(match[0]); } catch(e) {}
-      }
+      if (match) try { result = JSON.parse(match[0]); } catch(e) {}
     }
 
-    // Strategy 3: Remove markdown fences
     if (!result) {
       const cleaned = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
       try { result = JSON.parse(cleaned); } catch(e) {}
     }
 
-    // Strategy 4: Find first { to last }
     if (!result) {
       const start = rawText.indexOf('{');
       const end = rawText.lastIndexOf('}');
@@ -151,9 +146,7 @@ JSON ŞEMASI:
       }
     }
 
-    if (!result) {
-      throw new Error('AI yanıtı işlenemedi. Farklı bir haber linki deneyin.');
-    }
+    if (!result) throw new Error('AI yanıtı işlenemedi. Farklı bir haber linki deneyin.');
 
     return res.status(200).json(result);
 
