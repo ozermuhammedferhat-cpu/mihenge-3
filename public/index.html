@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mihenge · Gerçek Denetim</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0a0a0b;
+  --surface:  #111114;
+  --card:     #18181c;
+  --border:   #2a2a30;
+  --border2:  #333340;
+  --accent:   #22c55e;
+  --accent-d: #16a34a;
+  --warn:     #f59e0b;
+  --danger:   #ef4444;
+  --info:     #60a5fa;
+  --text:     #f4f4f5;
+  --text2:    #a1a1aa;
+  --text3:    #52525b;
+  --radius:   14px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,11,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.nav-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.nav-logo-mark svg { width: 18px; height: 18px; }
+
+.nav-logo-name {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.nav-badge {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent);
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ── HERO ── */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
+}
+
+.hero-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero p {
+  font-size: 16px;
+  color: var(--text2);
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── FORM ── */
+.form-section {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+.form-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.form-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-header-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.form-header-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 0.3px;
+}
+
+.form-body { padding: 24px; }
+
+.field { margin-bottom: 20px; }
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+.field-label span {
+  font-weight: 400;
+  color: var(--text3);
+  margin-left: 4px;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  resize: none;
+  appearance: none;
+}
+
+input[type="text"]:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.08);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text3);
+}
+
+/* Claims */
+.claims-wrapper { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+
+.claim-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.claim-index {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+
+.claim-row textarea { margin: 0; min-height: 72px; flex: 1; }
+
+.remove-btn {
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text3);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 10px;
+  transition: all 0.15s;
+}
+.remove-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+.add-claim-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--border2);
+  border-radius: 10px;
+  padding: 10px;
+  color: var(--text3);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 20px;
+}
+.add-claim-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 20px;
+}
+
+/* Submit */
+.submit-btn {
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  color: #0a0a0b;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit-btn:hover { background: #16a34a; }
+.submit-btn:active { transform: scale(0.99); }
+.submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.submit-btn svg { width: 16px; height: 16px; }
+
+/* Error */
+.error-msg {
+  display: none;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fca5a5;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+.error-msg.show { display: block; }
+
+/* ── LOADING ── */
+.loading-section {
+  display: none;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+.loading-section.show { display: block; }
+
+.loading-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-title {
+  font-family: 'Fraunces', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.loading-sub {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 28px;
+}
+
+.loading-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.lstep {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text3);
+  transition: color 0.3s;
+}
+
+.lstep-icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.lstep.active { color: var(--text); }
+.lstep.active .lstep-icon {
+  border-color: var(--accent);
+  background: rgba(34,197,94,0.1);
+  color: var(--accent);
+}
+
+.lstep.done { color: var(--text2); }
+.lstep.done .lstep-icon {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #0a0a0b;
+}
+
+/* ── RESULTS ── */
+.results-section {
+  display: none;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+.results-section.show { display: block; }
+
+/* Score card */
+.score-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.score-ring {
+  flex-shrink: 0;
+  position: relative;
+  width: 88px; height: 88px;
+}
+
+.score-ring svg {
+  transform: rotate(-90deg);
+  width: 88px; height: 88px;
+}
+
+.score-ring-text {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+
+.score-number {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 1px;
+}
+
+.score-info { flex: 1; min-width: 200px; }
+
+.score-verdict {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+
+.score-summary {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.score-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.meta-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
+
+/* Claim cards */
+.claim-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.claim-card-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.claim-card-header:hover { background: rgba(255,255,255,0.02); }
+
+.verdict-pill {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+.pill-true    { background: rgba(34,197,94,0.1);  color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+.pill-partial { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.pill-false   { background: rgba(239,68,68,0.1);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.pill-unverifiable { background: rgba(96,165,250,0.1); color: #93c5fd; border: 1px solid rgba(96,165,250,0.2); }
+
+.claim-text-wrap { flex: 1; }
+
+.claim-number {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  margin-bottom: 3px;
+  letter-spacing: 0.3px;
+}
+
+.claim-text {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--text3);
+  margin-top: 4px;
+  transition: transform 0.2s;
+}
+
+.claim-card.open .chevron { transform: rotate(180deg); }
+
+.claim-card-body {
+  display: none;
+  padding: 0 20px 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.claim-card.open .claim-card-body { display: block; }
+
+.explanation {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  padding: 16px 0 14px;
+}
+
+.sources-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.source-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color 0.15s;
+  margin-bottom: 6px;
+}
+.source-row:hover { border-color: var(--border2); }
+
+.source-stance-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.source-info { flex: 1; min-width: 0; }
+
+.source-name {
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.source-domain {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.source-stance-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+/* Reset */
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 24px auto 0;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.reset-btn:hover { border-color: var(--border2); color: var(--text); }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 32px 20px;
+  font-size: 12px;
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+footer strong { color: var(--text2); font-weight: 500; }
+
+@media (max-width: 560px) {
+  .hero { padding: 48px 20px 40px; }
+  .score-card { flex-direction: column; align-items: flex-start; }
+  nav { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <polyline points="9 12 11 14 15 10"/>
+      </svg>
+    </div>
+    <span class="nav-logo-name">Mihenge</span>
+  </div>
+  <span class="nav-badge">BETA</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Yapay Zeka Destekli Gerçek Denetimi</div>
+  <h1>Haberi sorgula,<br><em>gerçeği</em> bul.</h1>
+  <p>Haber, tweet veya herhangi bir iddiayı yapıştır. Güvenilir kaynaklarla analiz edelim.</p>
+</div>
+
+<!-- FORM -->
+<div class="form-section" id="formSection">
+  <div class="form-box">
+    <div class="form-header">
+      <div class="form-header-dot"></div>
+      <span class="form-header-title">Yeni Sorgulama</span>
+    </div>
+    <div class="form-body">
+
+      <div class="field">
+        <label class="field-label">Kaynak Linki <span>(opsiyonel)</span></label>
+        <input type="text" id="linkInput" placeholder="https://...">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Kaynak Adı <span>(opsiyonel)</span></label>
+        <input type="text" id="titleInput" placeholder="ör. CNN Türk, @kullanici, Haber7">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Kontrol Edilecek İçerik</label>
+        <div class="claims-wrapper" id="claimsWrapper">
+          <div class="claim-row">
+            <div class="claim-index">1</div>
+            <textarea placeholder="Haber metnini, tweet içeriğini veya kontrol etmek istediğin iddiayı buraya yaz..." rows="3"></textarea>
+          </div>
+        </div>
+        <button class="add-claim-btn" onclick="addClaim()">+ İddia ekle</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="error-msg" id="errorMsg"></div>
+      <button class="submit-btn" onclick="analyze()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Sorgula
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-section" id="loadingSection">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-title">Kaynaklar taranıyor</div>
+    <div class="loading-sub">Bu işlem 15–30 saniye sürebilir</div>
+    <div class="loading-steps">
+      <div class="lstep" id="s1"><div class="lstep-icon">1</div> İçerik işleniyor</div>
+      <div class="lstep" id="s2"><div class="lstep-icon">2</div> Web'de kaynak aranıyor</div>
+      <div class="lstep" id="s3"><div class="lstep-icon">3</div> Güvenilir kaynaklar kontrol ediliyor</div>
+      <div class="lstep" id="s4"><div class="lstep-icon">4</div> Doğruluk analizi yapılıyor</div>
+      <div class="lstep" id="s5"><div class="lstep-icon">5</div> Sonuçlar hazırlanıyor</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="resultsSection"></div>
+
+<footer>
+  <strong>Mihenge</strong> · Yapay zeka destekli gerçek denetimi<br>
+  <span style="margin-top:4px;display:block">Sonuçlar bilgilendirme amaçlıdır. Kaynaklara bizzat başvurmanızı öneririz.</span>
+</footer>
+
+<script>
+let claimCount = 1;
+
+function addClaim() {
+  claimCount++;
+  const wrapper = document.getElementById('claimsWrapper');
+  const row = document.createElement('div');
+  row.className = 'claim-row';
+  row.innerHTML = `
+    <div class="claim-index">${claimCount}</div>
+    <textarea placeholder="İddia ${claimCount}..." rows="3"></textarea>
+    <button class="remove-btn" onclick="removeClaim(this)">×</button>`;
+  wrapper.appendChild(row);
+}
+
+function removeClaim(btn) {
+  btn.closest('.claim-row').remove();
+  document.querySelectorAll('.claim-row .claim-index').forEach((el, i) => {
+    el.textContent = i + 1;
+  });
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById(`s${i}`);
+    if (i < n) { el.className = 'lstep done'; el.querySelector('.lstep-icon').textContent = '✓'; }
+    else if (i === n) { el.className = 'lstep active'; }
+    else { el.className = 'lstep'; el.querySelector('.lstep-icon').textContent = i; }
+  }
+}
+
+function animateSteps() {
+  const delays = [0, 3000, 7000, 12000, 18000];
+  delays.forEach((d, i) => setTimeout(() => setStep(i + 1), d));
+}
+
+async function analyze() {
+  const link   = document.getElementById('linkInput').value.trim();
+  const title  = document.getElementById('titleInput').value.trim();
+  const claims = [...document.querySelectorAll('#claimsWrapper textarea')]
+    .map(t => t.value.trim()).filter(Boolean);
+
+  const errEl = document.getElementById('errorMsg');
+  errEl.className = 'error-msg';
+
+  if (!claims.length) {
+    errEl.textContent = 'Lütfen en az bir içerik veya iddia girin.';
+    errEl.className = 'error-msg show';
+    return;
+  }
+
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('loadingSection').className = 'loading-section show';
+  document.getElementById('resultsSection').className = 'results-section';
+  animateSteps();
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ link, title, claims })
+    });
+
+    if (!res.ok) {
+      const e = await res.json();
+      throw new Error(e.error || 'Sunucu hatası');
+    }
+
+    const data = await res.json();
+    document.getElementById('loadingSection').className = 'loading-section';
+    renderResults(data, link, title);
+
+  } catch (err) {
+    document.getElementById('loadingSection').className = 'loading-section';
+    document.getElementById('formSection').style.display = 'block';
+    errEl.textContent = 'Hata: ' + err.message;
+    errEl.className = 'error-msg show';
+  }
+}
+
+function verdictColor(en) {
+  return { true: '#4ade80', partial: '#fbbf24', false: '#f87171', unverifiable: '#93c5fd' }[en] || '#93c5fd';
+}
+
+function stanceColor(s) {
+  return { 'DESTEKLER': '#4ade80', 'ÇÜRÜTÜR': '#f87171', 'NÖTR': '#71717a' }[s] || '#71717a';
+}
+
+function renderResults(data, link, title) {
+  const section = document.getElementById('resultsSection');
+  section.className = 'results-section show';
+
+  const score = data.overallScore ?? 0;
+  const color = verdictColor(score >= 70 ? 'true' : score >= 40 ? 'partial' : 'false');
+  const r = 38, circ = 2 * Math.PI * r;
+  const offset = circ - (score / 100) * circ;
+
+  section.innerHTML = `
+    <div class="score-card">
+      <div class="score-ring">
+        <svg viewBox="0 0 88 88">
+          <circle cx="44" cy="44" r="${r}" fill="none" stroke="#2a2a30" stroke-width="6"/>
+          <circle cx="44" cy="44" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
+            style="transition: stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-number" style="color:${color}">${score}</span>
+          <span class="score-label">/ 100</span>
+        </div>
+      </div>
+      <div class="score-info">
+        <div class="score-verdict" style="color:${color}">${data.overallVerdict || '—'}</div>
+        <div class="score-summary">${data.summary || ''}</div>
+        <div class="score-meta">
+          ${title ? `<span class="meta-tag">${title}</span>` : ''}
+          <span class="meta-tag">${(data.claims||[]).length} iddia</span>
+          <span class="meta-tag" style="border-color:${color}33;color:${color}">Skor: ${score}/100</span>
+        </div>
+      </div>
+    </div>
+
+    ${(data.claims||[]).map((c,i) => renderClaim(c, i)).join('')}
+
+    ${link ? `<div style="text-align:center;margin-top:16px">
+      <a href="${link}" target="_blank" rel="noopener"
+        style="font-size:12px;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:6px 16px;border-radius:8px;display:inline-flex;align-items:center;gap:6px">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Orijinal kaynağa git
+      </a>
+    </div>` : ''}
+
+    <button class="reset-btn" onclick="resetForm()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Yeni sorgulama
+    </button>`;
+}
+
+function renderClaim(c, idx) {
+  const en = c.verdictEn || 'unverifiable';
+  const color = verdictColor(en);
+  const verdictMap = { true:'DOĞRU', partial:'KISMEN DOĞRU', false:'YANLIŞ', unverifiable:'DOĞRULANAMAZ' };
+  const iconMap = { true:'✓', partial:'≈', false:'✗', unverifiable:'?' };
+
+  const sources = (c.sources||[]).map(s => {
+    let host = s.domain || '';
+    try { if (s.url) host = new URL(s.url).hostname.replace('www.',''); } catch(e) {}
+    const sc = stanceColor(s.stance);
+    return `<a class="source-row" href="${s.url||'#'}" target="_blank" rel="noopener">
+      <div class="source-stance-dot" style="background:${sc}"></div>
+      <div class="source-info">
+        <div class="source-name">${s.title || host}</div>
+        <div class="source-domain">${host}</div>
+      </div>
+      <span class="source-stance-badge" style="background:${sc}18;color:${sc};border:1px solid ${sc}30">
+        ${s.stance||'NÖTR'}
+      </span>
+    </a>`;
+  }).join('');
+
+  return `<div class="claim-card" style="animation-delay:${idx*0.08}s" onclick="toggleCard(this)">
+    <div class="claim-card-header">
+      <span class="verdict-pill pill-${en}">${iconMap[en]} ${verdictMap[en]}</span>
+      <div class="claim-text-wrap">
+        <div class="claim-number">İDDİA ${idx+1}</div>
+        <div class="claim-text">${c.claim}</div>
+      </div>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="claim-card-body">
+      <div class="explanation">${c.explanation||''}</div>
+      ${sources ? `<div class="sources-label">Kaynaklar</div>${sources}` : ''}
+    </div>
+  </div>`;
+}
+
+function toggleCard(card) { card.classList.toggle('open'); }
+
+function resetForm() {
+  document.getElementById('resultsSection').className = 'results-section';
+  document.getElementById('formSection').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
