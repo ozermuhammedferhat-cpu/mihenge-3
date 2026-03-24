@@ -104,8 +104,7 @@ GÖREV:
           tools: [{ googleSearch: {} }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 6000,
-            responseMimeType: "application/json"
+            maxOutputTokens: 6000
           }
         })
       }
