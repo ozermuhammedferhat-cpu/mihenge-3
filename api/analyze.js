@@ -146,7 +146,7 @@ GÖREV:
       }
     }
 
-    if (!result) throw new Error('AI yanıtı işlenemedi. Farklı bir haber linki deneyin.');
+    if (!result) throw new Error('BOZUK METİN: ' + rawText);
 
     return res.status(200).json(result);
 
