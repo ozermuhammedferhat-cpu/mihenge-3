@@ -68,7 +68,11 @@ GÖREV:
 - Bilmediğin/doğrulayamadığın şeyleri "DOĞRULANAMAZ" olarak işaretle
 - "Gelecekte gerçekleşecek" deme — bugün ${today}
 
-ÇIKTI: SADECE JSON, başka hiçbir şey yazma.
+ÇIKTI KURALLARI: 
+1. SADECE VE SADECE geçerli bir JSON nesnesi döndür. 
+2. ASLA başa veya sona Markdown (\`\`\`json) etiketleri koyma. Direkt { ile başla.
+3. ASLA metnin içine veya dışına [1], [2] gibi arama kaynakçası veya referans numaraları EKLEME. Bu durum JSON yapısını bozar!
+4. Başka hiçbir açıklama yapma.
 
 {
   "overallScore": 75,
