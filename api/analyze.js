@@ -51,13 +51,12 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          // Tools ve responseMimeType hatalarını önlemek için yapılandırma:
           generationConfig: {
             temperature: 0.1
           }
@@ -73,12 +72,14 @@ export default async function handler(req, res) {
     const geminiData = await geminiRes.json();
     const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    if (!rawText) throw new Error("AI geçerli bir yanıt üretmedi.");
+    if (!rawText) throw new Error("AI yanıt üretmedi.");
 
-    // En güvenli temizlik: JSON bloğunu cımbızla çek
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    const cleanJson = jsonMatch ? jsonMatch[0] : rawText;
+    // JSON bloğunu metnin içinden cımbızla çekme (En güvenli yol)
+    const start = rawText.indexOf('{');
+    const end = rawText.lastIndexOf('}');
+    if (start === -1 || end === -1) throw new Error("Geçerli JSON bulunamadı.");
     
+    const cleanJson = rawText.slice(start, end + 1);
     return res.status(200).json(JSON.parse(cleanJson));
 
   } catch (err) {
