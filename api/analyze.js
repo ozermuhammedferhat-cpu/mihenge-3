@@ -57,28 +57,31 @@ export default async function handler(req, res) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          tools: [{ google_search: {} }], // Doğru yazım: google_search
+          tools: [{ google_search: {} }],
           generationConfig: {
             temperature: 0.1,
-            responseMimeType: "application/json" // JSON zorunluluğu
+            responseMimeType: "application/json"
           }
         })
       }
     );
 
-    const geminiData = await geminiRes.json();
-    
-    // Google Search kullanıldığında metin 'text' alanında gelir
-    const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!rawText) {
-      throw new Error("AI geçerli bir JSON yanıtı oluşturamadı.");
+    if (!geminiRes.ok) {
+      const errData = await geminiRes.json();
+      throw new Error(errData.error?.message || 'AI servisi hatası');
     }
 
-    return res.status(200).json(JSON.parse(rawText));
+    const geminiData = await geminiRes.json();
+    const textPart = geminiData.candidates?.[0]?.content?.parts?.find(p => p.text);
+    const rawText = textPart ? textPart.text : null;
+
+    if (!rawText) throw new Error("AI geçerli bir yanıt üretmedi.");
+
+    const cleanJson = rawText.replace(/```json|```/g, "").trim();
+    return res.status(200).json(JSON.parse(cleanJson));
 
   } catch (err) {
-    console.error('Error:', err.message);
-    return res.status(500).json({ error: "İşlem başarısız: " + err.message });
+    console.error('Hata:', err.message);
+    return res.status(500).json({ error: "Analiz başarısız: " + err.message });
   }
 }
