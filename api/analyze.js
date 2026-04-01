@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     const geminiData = await geminiRes.json();
 
     if (!geminiRes.ok) {
-      throw new Error(geminiData.error?.message || 'API Hatası');
+      throw new Error(geminiData.error?.message || 'API Erişim Hatası');
     }
 
     const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
 
     const start = rawText.indexOf('{');
     const end = rawText.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error("JSON bulunamadı.");
+    if (start === -1 || end === -1) throw new Error("JSON Formatı Bozuk.");
     
     return res.status(200).json(JSON.parse(rawText.slice(start, end + 1)));
 
