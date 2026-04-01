@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
     if (!rawText) throw new Error("AI yanıt üretmedi.");
 
-    // JSON objesini güvenli şekilde ayıkla
+    // JSON bloğunu metnin içinden cımbızla çekme
     const start = rawText.indexOf('{');
     const end = rawText.lastIndexOf('}');
     if (start === -1 || end === -1) throw new Error("Format hatası: " + rawText);
