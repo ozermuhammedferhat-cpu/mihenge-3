@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -77,11 +77,9 @@ export default async function handler(req, res) {
 
     if (!rawText) throw new Error("AI geçerli bir yanıt üretmedi.");
 
-    const cleanJson = rawText.replace(/```json|```/g, "").trim();
-    return res.status(200).json(JSON.parse(cleanJson));
+    return res.status(200).json(JSON.parse(rawText.replace(/```json|```/g, "").trim()));
 
   } catch (err) {
-    console.error('Hata:', err.message);
-    return res.status(500).json({ error: "Analiz başarısız: " + err.message });
+    return res.status(500).json({ error: "Hata: " + err.message });
   }
 }
