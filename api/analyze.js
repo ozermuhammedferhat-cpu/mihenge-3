@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -61,26 +61,25 @@ export default async function handler(req, res) {
       }
     );
 
+    const geminiData = await geminiRes.json();
+
     if (!geminiRes.ok) {
-      const errData = await geminiRes.json();
-      throw new Error(errData.error?.message || 'AI servisi hatası');
+      throw new Error(geminiData.error?.message || 'API Hatası');
     }
 
-    const geminiData = await geminiRes.json();
     const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-
     if (!rawText) throw new Error("AI yanıt üretmedi.");
 
-    // JSON bloğunu metnin içinden cımbızla çekme
+    // Metnin içindeki JSON'ı cımbızla çek
     const start = rawText.indexOf('{');
     const end = rawText.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error("Format hatası: " + rawText);
+    if (start === -1 || end === -1) throw new Error("Format bozuk.");
     
     const cleanJson = rawText.slice(start, end + 1);
     return res.status(200).json(JSON.parse(cleanJson));
 
   } catch (err) {
     console.error('Hata:', err.message);
-    return res.status(500).json({ error: "Analiz başarısız: " + err.message });
+    return res.status(500).json({ error: "Sistem hatası: " + err.message });
   }
 }
