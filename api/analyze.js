@@ -51,16 +51,15 @@ export default async function handler(req, res) {
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          tools: [{ google_search: {} }],
+          // Tools ve responseMimeType hatalarını önlemek için yapılandırma:
           generationConfig: {
-            temperature: 0.1,
-            responseMimeType: "application/json"
+            temperature: 0.1
           }
         })
       }
@@ -72,14 +71,18 @@ export default async function handler(req, res) {
     }
 
     const geminiData = await geminiRes.json();
-    const textPart = geminiData.candidates?.[0]?.content?.parts?.find(p => p.text);
-    const rawText = textPart ? textPart.text : null;
+    const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!rawText) throw new Error("AI geçerli bir yanıt üretmedi.");
 
-    return res.status(200).json(JSON.parse(rawText.replace(/```json|```/g, "").trim()));
+    // En güvenli temizlik: JSON bloğunu cımbızla çek
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    const cleanJson = jsonMatch ? jsonMatch[0] : rawText;
+    
+    return res.status(200).json(JSON.parse(cleanJson));
 
   } catch (err) {
-    return res.status(500).json({ error: "Hata: " + err.message });
+    console.error('Hata:', err.message);
+    return res.status(500).json({ error: "Analiz başarısız: " + err.message });
   }
 }
