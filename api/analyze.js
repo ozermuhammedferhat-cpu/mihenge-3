@@ -71,7 +71,7 @@ export default async function handler(req, res) {
 
     if (!rawText) throw new Error("AI yanıt üretmedi.");
 
-    // JSON'ı metnin içinden çekip çıkarır
+    // JSON objesini güvenli şekilde ayıkla
     const start = rawText.indexOf('{');
     const end = rawText.lastIndexOf('}');
     if (start === -1 || end === -1) throw new Error("Format hatası: " + rawText);
